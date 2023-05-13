@@ -8,5 +8,7 @@ urlpatterns = (
     path('room-schemas/', views.RoomSchemaList.as_view()),
     path('room-schemas/<int:pk>/', views.RoomSchemaDetail.as_view()),
     path('room-schemas/create/', views.RoomSchemaCreate.as_view()),
-    path('room-item/', views.RoomItemCreate.as_view())
+    path('room-item/', views.RoomItemCreate.as_view()),
+    path('create-problem/', views.MalfunctionReportCreate.as_view()),
+    path('create-problem-items/', views.MalfunctionReportItemCreate.as_view()),
 )

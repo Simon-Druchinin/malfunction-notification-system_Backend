@@ -1,6 +1,8 @@
-from django.db.utils import IntegrityError
+from django.utils import timezone
+
 from rest_framework import serializers
-from schemas.models import ItemCategory, Item, RoomSchema, RoomItem
+from schemas.models import (ItemCategory, Item, RoomSchema, 
+                            RoomItem, MalfunctionReport, MalfunctionReportStatus, MalfunctionReportItem)
 
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 
@@ -54,3 +56,22 @@ class RoomSchemaCreateSerializer(WritableNestedModelSerializer):
     class Meta:
         model = RoomSchema
         fields = ('id', 'name', 'length', 'width')      
+
+class MalfunctionReportStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MalfunctionReportStatus
+        fields = ('id', 'name', )
+
+class MalfunctionReportItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MalfunctionReportItem
+        fields = ('problem_text', 'malfunction_report', 'room_element')
+
+class MalfunctionReportSerializer(WritableNestedModelSerializer):
+    status = serializers.HiddenField(default=MalfunctionReportStatus.objects.get(pk=1))
+    date_created = serializers.HiddenField(default=timezone.now)
+    created_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    
+    class Meta:
+        model = MalfunctionReport
+        fields = ('id', 'name', 'problem_text', 'room_schema', 'date_created', 'created_by', 'status')

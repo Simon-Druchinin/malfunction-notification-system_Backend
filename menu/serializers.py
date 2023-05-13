@@ -7,7 +7,7 @@ from menu.models import NavigationMenu, DropDownMenu
 class ChildNavigationMenuSerializer(serializers.ModelSerializer):
     class Meta:
         model = NavigationMenu
-        exclude = ('parent', )
+        exclude = ('parent', 'permission')
 
 
 class NavigationMenuSerializer(serializers.ModelSerializer):

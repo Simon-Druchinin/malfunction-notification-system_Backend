@@ -29,15 +29,16 @@ class MalfunctionReportStatus(models.Model):
     name = models.CharField(max_length=127)
 
 class MalfunctionReport(models.Model):
+    name = models.CharField(max_length=127)
     problem_text = models.TextField(blank=True, null=True, help_text="Общее описание неисправностей в комнате")
     room_schema = models.ForeignKey(RoomSchema, on_delete=models.CASCADE)
     date_created = models.DateTimeField(default=timezone.now)
     created_by = models.ForeignKey(User, related_name='created_by', on_delete=models.CASCADE)
-    taken_by = models.ForeignKey(User, related_name='taken_by', on_delete=models.CASCADE)
+    taken_by = models.ForeignKey(User, related_name='taken_by', on_delete=models.CASCADE, blank=True, null=True)
     status = models.ForeignKey(MalfunctionReportStatus, on_delete=models.PROTECT)
 
 class MalfunctionReportItem(models.Model):
     problem_text = models.TextField(blank=True, null=True, help_text="Описание неисправности элемента")
-    malfunction_report = models.ForeignKey(RoomSchema, related_name='problem_elements', on_delete=models.CASCADE)
+    malfunction_report = models.ForeignKey(MalfunctionReport, related_name='problem_elements', on_delete=models.CASCADE)
     room_element = models.ForeignKey(RoomItem, on_delete=models.CASCADE)
     
