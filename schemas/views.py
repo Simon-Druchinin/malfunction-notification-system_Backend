@@ -1,6 +1,8 @@
 from rest_framework import generics, filters, status
 from rest_framework.response import Response
 
+from django_filters.rest_framework import DjangoFilterBackend
+
 from users.permissions import CustomDjangoModelPermissions
 
 from schemas.models import ItemCategory, Item, RoomSchema, RoomItem, MalfunctionReportItem, MalfunctionReport
@@ -10,8 +12,9 @@ from schemas.serializers import (ItemCategorySerializer,
                                  RoomSchemaNameSerializer,
                                  RoomItemCreateSerializer,
                                  RoomSchemaCreateSerializer,
-                                 MalfunctionReportSerializer,
-                                 MalfunctionReportItemSerializer)
+                                 MalfunctionReportCreateSerializer,
+                                 MalfunctionReportItemCreateSerializer,
+                                 MalfunctionReportSerializer, MalfunctionReportListSerializer)
 
 
 class ItemCategoryList(generics.ListAPIView):
@@ -56,11 +59,11 @@ class RoomItemCreate(generics.CreateAPIView):
 
 class MalfunctionReportCreate(generics.CreateAPIView):
     queryset = MalfunctionReport.objects.all()
-    serializer_class = MalfunctionReportSerializer
+    serializer_class = MalfunctionReportCreateSerializer
 
 class MalfunctionReportItemCreate(generics.CreateAPIView):
     queryset = MalfunctionReportItem.objects.all()
-    serializer_class = MalfunctionReportItemSerializer
+    serializer_class = MalfunctionReportItemCreateSerializer
     
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, many=isinstance(request.data, list))
@@ -68,3 +71,18 @@ class MalfunctionReportItemCreate(generics.CreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+class MalfunctionReportList(generics.ListAPIView):
+    queryset = MalfunctionReport.objects.all()
+    serializer_class = MalfunctionReportListSerializer
+    filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
+    ordering = ['-date_created']
+    filterset_fields = ['created_by', 'taken_by']
+    
+class MalfunctionReportDetailUpdate(generics.RetrieveUpdateAPIView):
+    queryset = MalfunctionReport.objects.all()
+    serializer_class = MalfunctionReportSerializer
+    
+class MalfunctionReportTake(generics.UpdateAPIView):
+    queryset = MalfunctionReport.objects.all()
+    serializer_class = MalfunctionReportCreateSerializer

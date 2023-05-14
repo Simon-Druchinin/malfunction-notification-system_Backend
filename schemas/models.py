@@ -27,6 +27,7 @@ class RoomItem(models.Model):
 
 class MalfunctionReportStatus(models.Model):
     name = models.CharField(max_length=127)
+    color = models.CharField(max_length=63, default='primary', blank=True, null=True)
 
 class MalfunctionReport(models.Model):
     name = models.CharField(max_length=127)
@@ -35,7 +36,13 @@ class MalfunctionReport(models.Model):
     date_created = models.DateTimeField(default=timezone.now)
     created_by = models.ForeignKey(User, related_name='created_by', on_delete=models.CASCADE)
     taken_by = models.ForeignKey(User, related_name='taken_by', on_delete=models.CASCADE, blank=True, null=True)
-    status = models.ForeignKey(MalfunctionReportStatus, on_delete=models.PROTECT)
+    status = models.ForeignKey(MalfunctionReportStatus, default=1, on_delete=models.PROTECT)
+    
+    class Meta:
+        permissions = (
+        ("take_malfunctionreport", "Can take malfunction report in work"),
+    )
+
 
 class MalfunctionReportItem(models.Model):
     problem_text = models.TextField(blank=True, null=True, help_text="Описание неисправности элемента")

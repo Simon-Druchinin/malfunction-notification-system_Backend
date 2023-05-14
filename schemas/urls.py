@@ -11,4 +11,7 @@ urlpatterns = (
     path('room-item/', views.RoomItemCreate.as_view()),
     path('create-problem/', views.MalfunctionReportCreate.as_view()),
     path('create-problem-items/', views.MalfunctionReportItemCreate.as_view()),
+    path('malfunction-reports/', views.MalfunctionReportList.as_view()),
+    path('malfunction-reports/<int:pk>/', views.MalfunctionReportDetailUpdate.as_view()),
+    path('take-problem/<int:pk>/', views.MalfunctionReportTake.as_view()),
 )

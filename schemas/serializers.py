@@ -6,6 +6,8 @@ from schemas.models import (ItemCategory, Item, RoomSchema,
 
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 
+from users.serializers import UserSerializer
+
 
 class ItemCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -60,18 +62,44 @@ class RoomSchemaCreateSerializer(WritableNestedModelSerializer):
 class MalfunctionReportStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = MalfunctionReportStatus
-        fields = ('id', 'name', )
+        fields = ('id', 'name', 'color')
 
-class MalfunctionReportItemSerializer(serializers.ModelSerializer):
+class MalfunctionReportItemCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = MalfunctionReportItem
         fields = ('problem_text', 'malfunction_report', 'room_element')
 
-class MalfunctionReportSerializer(WritableNestedModelSerializer):
-    status = serializers.HiddenField(default=MalfunctionReportStatus.objects.get(pk=1))
+class MalfunctionReportCreateSerializer(WritableNestedModelSerializer):
     date_created = serializers.HiddenField(default=timezone.now)
-    created_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    created_by = serializers.HiddenField(default=serializers.CurrentUserDefault())  
     
     class Meta:
         model = MalfunctionReport
-        fields = ('id', 'name', 'problem_text', 'room_schema', 'date_created', 'created_by', 'status')
+        fields = ('id', 'name', 'problem_text', 'room_schema', 'date_created', 'created_by', 'status', 'taken_by')
+
+class MalfunctionReportItemSerializer(serializers.ModelSerializer):
+    room_element = RoomItemSerializer()
+    class Meta:
+        model = MalfunctionReportItem
+        fields = ('problem_text', 'malfunction_report', 'room_element')
+
+class MalfunctionReportListSerializer(serializers.ModelSerializer):
+    room_schema = RoomSchemaCreateSerializer(read_only=True)
+    status = MalfunctionReportStatusSerializer(read_only=True)
+    
+    class Meta:
+        model = MalfunctionReport
+        fields = ('id', 'name', 'problem_text', 'room_schema', 'date_created',
+                  'created_by', 'taken_by', 'status',)
+
+class MalfunctionReportSerializer(WritableNestedModelSerializer):
+    room_schema = RoomSchemaCreateSerializer(read_only=True)
+    created_by = UserSerializer(read_only=True)
+    taken_by = UserSerializer(read_only=True)
+    status = MalfunctionReportStatusSerializer(read_only=True)
+    problem_elements = MalfunctionReportItemSerializer(many=True)
+    
+    class Meta:
+        model = MalfunctionReport
+        fields = ('id', 'name', 'problem_text', 'room_schema', 'date_created',
+                  'created_by', 'taken_by', 'status', 'problem_elements')
