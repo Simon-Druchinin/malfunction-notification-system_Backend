@@ -3,6 +3,7 @@
 
 ---
 ### [Описание](https://github.com/Simon-Druchinin/malfunction-notification-system/#Описание)
+https://github.com/Simon-Druchinin/malfunction-notification-system/#Описание
 
 ---
 ### Как запустить:
