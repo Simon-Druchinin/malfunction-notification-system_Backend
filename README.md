@@ -1,13 +1,18 @@
 # Malfunction notification system (Backend)
-## Приложение для моделирования 2д макетов / оповещения о несправностях в аудиториях
+## Приложение для оповещения о неисправностях в аудиториях
 
 ---
-
 ### Как запустить:
 ```bash
 pip install -r requirements.txt
 python manage.py runserver
 ```
+
+---
+### Стек:
++ **Python**
++ **Django Rest Framework**
++ **Simple-jwt**
 
 ---
 ### [Frontend часть](https://github.com/Simon-Druchinin/malfunction-notification-system)
