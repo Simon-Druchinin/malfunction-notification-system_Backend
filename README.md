@@ -2,6 +2,9 @@
 ## Приложение для оповещения о неисправностях в аудиториях
 
 ---
+### [Описание](https://github.com/Simon-Druchinin/malfunction-notification-system/#Описание)
+
+---
 ### Как запустить:
 ```bash
 pip install -r requirements.txt
